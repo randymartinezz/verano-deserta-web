@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Confirmed — VERANO DESERT® × LA NENA</title>
+  <meta name="robots" content="noindex">
+  <style>
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black:        #0a0809;
+      --brown-border: rgba(122, 92, 66, 0.22);
+      --gold:         #B08A50;
+      --gold-dim:     rgba(176, 138, 80, 0.55);
+      --white:        #ede8e1;
+      --cream:        #fdf4e4;
+      --muted:        rgba(237, 232, 225, 0.48);
+      --font:         'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+
+    .site-nav {
+      padding: 1.4rem 2rem;
+      border-bottom: 1px solid rgba(122, 92, 66, 0.14);
+    }
+
+    .back-link {
+      font-size: 10px;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s ease;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    /* ── PAGE ── */
+
+    .page {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 5rem 1.6rem 5rem;
+      text-align: center;
+    }
+
+    /* Loading state */
+    .state-loading .confirm-block,
+    .state-loading .error-block {
+      display: none;
+    }
+
+    .loading-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+    }
+
+    .state-confirmed .loading-block,
+    .state-confirmed .error-block {
+      display: none;
+    }
+
+    .state-error .loading-block,
+    .state-error .confirm-block {
+      display: none;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(176, 138, 80, 0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 10px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── CONFIRMED STATE ── */
+
+    .confirm-block {}
+
+    .confirm-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2.4rem;
+      color: var(--gold);
+      font-size: 20px;
+    }
+
+    .confirm-label {
+      font-size: 10px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .confirm-heading {
+      font-size: clamp(22px, 5vw, 30px);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      margin-bottom: 1rem;
+    }
+
+    .confirm-sub {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2.8rem;
+    }
+
+    .header-rule {
+      width: min(220px, 55vw);
+      height: 1px;
+      margin: 0 auto 2.8rem;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(176, 138, 80, 0.22) 15%,
+        rgba(176, 138, 80, 0.50) 50%,
+        rgba(176, 138, 80, 0.22) 85%,
+        transparent 100%);
+    }
+
+    /* Order details */
+    .order-details {
+      border: 1px solid var(--brown-border);
+      border-radius: 3px;
+      padding: 1.6rem 1.8rem;
+      margin-bottom: 2.8rem;
+      text-align: left;
+    }
+
+    .order-detail-label {
+      font-size: 9px;
+      letter-spacing: 0.48em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.6rem;
+    }
+
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(122, 92, 66, 0.12);
+    }
+
+    .order-detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-key {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .detail-value {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--cream);
+      text-align: right;
+      max-width: 58%;
+    }
+
+    .detail-value.gold {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* Return link */
+    .return-link {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s ease;
+    }
+
+    .return-link:hover { color: var(--gold); }
+
+    /* ── ERROR STATE ── */
+
+    .error-block {}
+
+    .error-icon {
+      font-size: 28px;
+      margin-bottom: 1.6rem;
+      opacity: 0.5;
+    }
+
+    .error-heading {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-bottom: 0.8rem;
+    }
+
+    .error-text {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .error-link {
+      font-size: 10px;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      .page { padding: 3.5rem 1.2rem 4rem; }
+      .order-details { padding: 1.3rem 1.4rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a href="/" class="back-link">← Verano Desert®</a>
+  </nav>
+
+  <main class="page state-loading" id="page">
+
+    <!-- LOADING -->
+    <div class="loading-block">
+      <div class="spinner"></div>
+      <p class="loading-text">Verifying your payment…</p>
+    </div>
+
+    <!-- CONFIRMED -->
+    <div class="confirm-block">
+      <div class="confirm-mark">✓</div>
+      <p class="confirm-label">Payment Confirmed</p>
+      <h1 class="confirm-heading">Your access has been reserved.</h1>
+      <p class="confirm-sub">Check your email for your ticket information.</p>
+      <div class="header-rule"></div>
+      <div class="order-details">
+        <p class="order-detail-label">Order Summary</p>
+        <div class="order-detail-row" id="row-name" hidden>
+          <span class="detail-key">Name</span>
+          <span class="detail-value" id="detail-name"></span>
+        </div>
+        <div class="order-detail-row" id="row-email" hidden>
+          <span class="detail-key">Email</span>
+          <span class="detail-value" id="detail-email"></span>
+        </div>
+        <div class="order-detail-row" id="row-type" hidden>
+          <span class="detail-key">Ticket</span>
+          <span class="detail-value" id="detail-type"></span>
+        </div>
+        <div class="order-detail-row" id="row-qty" hidden>
+          <span class="detail-key">Quantity</span>
+          <span class="detail-value" id="detail-qty"></span>
+        </div>
+        <div class="order-detail-row" id="row-total" hidden>
+          <span class="detail-key">Total Paid</span>
+          <span class="detail-value gold" id="detail-total"></span>
+        </div>
+      </div>
+      <a href="/" class="return-link">← Return to event</a>
+    </div>
+
+    <!-- ERROR / PENDING -->
+    <div class="error-block">
+      <div class="error-icon">—</div>
+      <h1 class="error-heading" id="error-heading">Payment Pending</h1>
+      <p class="error-text" id="error-text">
+        We could not confirm your payment at this time.<br>
+        If you completed a purchase, check your email for a confirmation from Stripe.<br>
+        Contact us if you need assistance.
+      </p>
+      <a href="/tickets" class="error-link">← Back to tickets</a>
+    </div>
+
+  </main>
+
+  <script>
+    (function () {
+      const page = document.getElementById('page');
+
+      const TICKET_LABELS = {
+        'general': 'General — Early Bird',
+        'vip': 'VIP Access',
+      };
+
+      function formatAmount(amountTotal, currency) {
+        if (!amountTotal) return null;
+        const amount = amountTotal / 100;
+        if (currency && currency.toUpperCase() === 'DOP') {
+          return 'RD$' + amount.toLocaleString('es-DO');
+        }
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: currency ? currency.toUpperCase() : 'USD',
+        }).format(amount);
+      }
+
+      function showRow(id, valueId, value) {
+        if (!value) return;
+        document.getElementById(valueId).textContent = value;
+        document.getElementById(id).hidden = false;
+      }
+
+      function setState(state) {
+        page.className = 'page state-' + state;
+      }
+
+      function showError(heading, text) {
+        if (heading) document.getElementById('error-heading').textContent = heading;
+        if (text) document.getElementById('error-text').textContent = text;
+        setState('error');
+      }
+
+      async function verify() {
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get('session_id');
+
+        if (!sessionId || !sessionId.startsWith('cs_')) {
+          showError('Invalid Access', 'No valid session found. Please complete the purchase from the ticket selection page.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/verify-checkout-session?session_id=' + encodeURIComponent(sessionId));
+          const data = await res.json();
+
+          if (!res.ok) {
+            showError('Verification Failed', 'We could not reach our server. Please contact us if you completed a payment.');
+            return;
+          }
+
+          if (!data.verified) {
+            showError('Payment Pending', 'Your payment has not been confirmed yet. If you completed a purchase, check your email or contact us.');
+            return;
+          }
+
+          // Show confirmed state
+          setState('confirmed');
+
+          showRow('row-name', 'detail-name', data.customerName);
+          showRow('row-email', 'detail-email', data.customerEmail);
+          showRow('row-type', 'detail-type', TICKET_LABELS[data.ticketType] || data.ticketType);
+          showRow('row-qty', 'detail-qty', data.quantity ? data.quantity + (data.quantity === '1' ? ' ticket' : ' tickets') : null);
+          showRow('row-total', 'detail-total', formatAmount(data.amountTotal, data.currency));
+
+        } catch (err) {
+          showError('Connection Error', 'We could not verify your payment. If you completed a purchase, please contact us.');
+        }
+      }
+
+      verify();
+    })();
+  </script>
+
+</body>
+</html>
