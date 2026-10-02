@@ -40,6 +40,14 @@ module.exports = async function handler(req, res) {
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: qty }],
       billing_address_collection: 'auto',
+      custom_fields: [
+        {
+          key: 'attendee_name',
+          label: { type: 'custom', custom: 'Nombre completo del asistente' },
+          type: 'text',
+          optional: false,
+        },
+      ],
       metadata: {
         event: 'halloween-2026',
         event_name: '¿QUIÉN MATÓ A LA NENA?',
