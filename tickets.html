@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Access — VERANO DESERT® × LA NENA | Halloween 2026</title>
+  <meta name="robots" content="noindex">
+  <style>
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black:        #09080a;
+      --brown-border: rgba(122, 92, 66, 0.20);
+      --gold:         #B08A50;
+      --gold-dim:     rgba(176, 138, 80, 0.50);
+      --gold-glow:    rgba(176, 138, 80, 0.08);
+      --cream:        #f0e9db;
+      --white:        #e8e2d9;
+      --muted:        rgba(232, 226, 217, 0.42);
+      --muted-2:      rgba(232, 226, 217, 0.26);
+      --font:         'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    html {
+      background: var(--black);
+    }
+
+    body {
+      /* Warm amber depth from above — very subtle desert mood */
+      background:
+        radial-gradient(ellipse 110% 38% at 50% 0%,
+          rgba(110, 68, 18, 0.13) 0%,
+          transparent 62%),
+        var(--black);
+      color: var(--white);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+
+    .site-nav {
+      padding: 0.85rem 1.4rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .back-link {
+      font-size: 8.5px;
+      letter-spacing: 0.44em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.22s ease;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    /* ── COMPACT HEADER ── */
+
+    .event-header {
+      text-align: center;
+      padding: 0.5rem 1.4rem 0.65rem;
+      position: relative;
+    }
+
+    /* Thin gradient separator instead of hard border */
+    .event-header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      margin-top: 0.75rem;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(122, 92, 66, 0.18) 20%,
+        rgba(176, 138, 80, 0.28) 50%,
+        rgba(122, 92, 66, 0.18) 80%,
+        transparent 100%);
+    }
+
+    .header-overline {
+      font-size: 7.5px;
+      letter-spacing: 0.62em;
+      text-transform: uppercase;
+      color: rgba(176, 138, 80, 0.72);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Logo: original colors, no filter. Natural cream + red blood accent. */
+    .header-logo {
+      display: block;
+      /* Slightly wider so the natural atmospheric glow fills the header well */
+      width: clamp(170px, 52vw, 260px);
+      height: auto;
+      margin: 0 auto 0.4rem;
+      /* No filter — preserve the original cream text + blood-red slash */
+    }
+
+    .header-meta {
+      font-size: 7.5px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── CHECKOUT BODY ── */
+
+    .checkout {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1rem 1.1rem 2rem;
+    }
+
+    .section-label {
+      font-size: 8px;
+      letter-spacing: 0.60em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      text-align: center;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ── TICKET CARDS ── */
+
+    .ticket-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .ticket-card {
+      border: 1px solid rgba(122, 92, 66, 0.16);
+      border-radius: 2px;
+      padding: 0.85rem 1rem 0.85rem 1.2rem;
+      cursor: pointer;
+      transition:
+        border-color 0.24s ease,
+        background 0.24s ease,
+        box-shadow 0.24s ease;
+      position: relative;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      /* Very subtle dark card inset — elevates cards above flat background */
+      background: rgba(255, 255, 255, 0.016);
+    }
+
+    /* Left gold accent bar */
+    .ticket-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 2px;
+      background: transparent;
+      border-radius: 2px 0 0 2px;
+      transition: background 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    .ticket-card:focus-visible {
+      outline: 1px solid var(--gold-dim);
+      outline-offset: 2px;
+    }
+
+    .ticket-card:hover:not(.selected) {
+      border-color: rgba(122, 92, 66, 0.28);
+      background: rgba(255, 255, 255, 0.024);
+    }
+
+    .ticket-card.selected {
+      border-color: rgba(176, 138, 80, 0.42);
+      background: linear-gradient(160deg,
+        rgba(176, 138, 80, 0.075) 0%,
+        rgba(130, 90, 30, 0.03) 100%);
+      box-shadow:
+        0 0 0 1px rgba(176, 138, 80, 0.06) inset,
+        0 10px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .ticket-card.selected::before {
+      background: linear-gradient(180deg, rgba(176, 138, 80, 0.9), rgba(176, 138, 80, 0.55));
+      box-shadow: 1px 0 8px rgba(176, 138, 80, 0.18);
+    }
+
+    /* Card header row: tag + dot */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.42rem;
+    }
+
+    .ticket-tag {
+      font-size: 7.5px;
+      letter-spacing: 0.50em;
+      text-transform: uppercase;
+      color: rgba(176, 138, 80, 0.70);
+    }
+
+    .ticket-card.selected .ticket-tag {
+      color: var(--gold);
+    }
+
+    /* Premium selection indicator */
+    .ticket-select-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(122, 92, 66, 0.30);
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.22s ease;
+    }
+
+    .ticket-card.selected .ticket-select-dot {
+      border-color: var(--gold);
+      background: var(--gold);
+      /* Inner dot via box-shadow — no extra element needed */
+      box-shadow: 0 0 0 2px rgba(176, 138, 80, 0.22);
+    }
+
+    .ticket-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-bottom: 0.22rem;
+    }
+
+    .ticket-price {
+      font-size: clamp(20px, 5.5vw, 26px);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--gold);
+      margin-bottom: 0.65rem;
+      line-height: 1;
+    }
+
+    /* Refined divider — thinner, more elegant */
+    .ticket-rule {
+      height: 1px;
+      background: linear-gradient(90deg,
+        rgba(122, 92, 66, 0.22) 0%,
+        rgba(122, 92, 66, 0.12) 100%);
+      margin-bottom: 0.58rem;
+    }
+
+    .ticket-benefits {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.28rem;
+    }
+
+    .ticket-benefits li {
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      color: rgba(232, 226, 217, 0.58);
+      padding-left: 0.9rem;
+      position: relative;
+      line-height: 1.45;
+    }
+
+    .ticket-benefits li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(176, 138, 80, 0.40);
+      font-size: 9px;
+      top: 2px;
+    }
+
+    .ticket-note {
+      font-size: 8px;
+      letter-spacing: 0.04em;
+      color: rgba(232, 226, 217, 0.22);
+      margin-top: 0.5rem;
+      line-height: 1.55;
+    }
+
+    /* ── ORDER BAR ── */
+
+    .order-bar {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(122, 92, 66, 0.18);
+      border-radius: 2px;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      /* Subtle glass layer */
+      background: rgba(255, 255, 255, 0.018);
+      backdrop-filter: blur(0px);
+    }
+
+    .order-qty {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      flex: 1;
+    }
+
+    .order-label {
+      font-size: 7.5px;
+      letter-spacing: 0.50em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      white-space: nowrap;
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(122, 92, 66, 0.20);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 300;
+      cursor: pointer;
+      transition: background 0.18s ease;
+      line-height: 1;
+      font-family: var(--font);
+    }
+
+    .qty-btn:hover { background: rgba(176, 138, 80, 0.09); }
+    .qty-btn:disabled { color: rgba(122, 92, 66, 0.28); cursor: default; }
+    .qty-btn:disabled:hover { background: transparent; }
+
+    .qty-display {
+      width: 36px;
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--cream);
+      border-left: 1px solid rgba(122, 92, 66, 0.18);
+      border-right: 1px solid rgba(122, 92, 66, 0.18);
+      height: 32px;
+      line-height: 32px;
+    }
+
+    .order-total {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1rem;
+      border-left: 1px solid rgba(122, 92, 66, 0.16);
+    }
+
+    .total-amount {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── ERROR ── */
+
+    .error-msg {
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      color: rgba(210, 70, 70, 0.88);
+      text-align: center;
+      margin-bottom: 0.65rem;
+    }
+
+    /* ── CTA BUTTON ── */
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 0.95rem 2rem;
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.52em;
+      text-transform: uppercase;
+      color: #0c0906;
+      background: linear-gradient(135deg, #7A5C32, #B08A50, #8A6A3F, #C09A60, #7A5C32);
+      background-size: 300% 100%;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.26s ease, box-shadow 0.26s ease, filter 0.26s ease;
+      box-shadow:
+        0 2px 18px rgba(138, 106, 63, 0.24),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset;
+      animation: gradient-shift 6s ease-in-out infinite;
+      margin-bottom: 0.85rem;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50%       { background-position: 100% 50%; }
+    }
+
+    .checkout-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 28px rgba(138, 106, 63, 0.30);
+      animation-play-state: paused;
+    }
+
+    .checkout-btn:active {
+      transform: translateY(0);
+      filter: brightness(1);
+    }
+
+    .checkout-btn:disabled {
+      opacity: 0.52;
+      cursor: wait;
+      animation-play-state: paused;
+      transform: none;
+    }
+
+    .secure-note {
+      font-size: 8px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(232, 226, 217, 0.18);
+      text-align: center;
+    }
+
+    /* ── DESKTOP: 2-column cards ── */
+
+    @media (min-width: 620px) {
+      .event-header {
+        padding: 1.1rem 2rem 0.85rem;
+      }
+
+      .header-logo {
+        width: clamp(200px, 22vw, 300px);
+        margin-bottom: 0.5rem;
+      }
+
+      .header-overline { margin-bottom: 0.6rem; }
+
+      .checkout {
+        padding: 1.6rem 2rem 3rem;
+      }
+
+      .ticket-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+        margin-bottom: 1.1rem;
+      }
+
+      .ticket-card {
+        padding: 1rem 1.1rem 1rem 1.3rem;
+      }
+
+      .checkout-btn {
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a href="/" class="back-link">← Verano Desert®</a>
+  </nav>
+
+  <header class="event-header">
+    <p class="header-overline">Halloween 2026</p>
+    <img class="header-logo"
+         src="assets/logos/primary/logo-quien.png"
+         alt="¿Quién Mató a La Nena?" />
+    <p class="header-meta">Verano Desert® &times; La Nena &nbsp;&middot;&nbsp; Oct 31 &nbsp;&middot;&nbsp; Punta Cana</p>
+  </header>
+
+  <main class="checkout">
+
+    <p class="section-label">Select Your Access</p>
+
+    <div class="ticket-cards" id="ticket-cards">
+
+      <div class="ticket-card selected"
+           data-type="general"
+           data-price="2500"
+           role="button"
+           tabindex="0"
+           aria-pressed="true">
+        <div class="card-header">
+          <p class="ticket-tag">Early Bird</p>
+          <div class="ticket-select-dot"></div>
+        </div>
+        <h2 class="ticket-name">General Access</h2>
+        <p class="ticket-price">RD$2,500</p>
+        <div class="ticket-rule"></div>
+        <ul class="ticket-benefits">
+          <li>Entrada general</li>
+          <li>Brazalete estándar del evento</li>
+          <li>Acceso a toda la experiencia de Halloween</li>
+        </ul>
+      </div>
+
+      <div class="ticket-card"
+           data-type="vip"
+           data-price="3500"
+           role="button"
+           tabindex="0"
+           aria-pressed="false">
+        <div class="card-header">
+          <p class="ticket-tag">VIP</p>
+          <div class="ticket-select-dot"></div>
+        </div>
+        <h2 class="ticket-name">VIP Access</h2>
+        <p class="ticket-price">RD$3,500</p>
+        <div class="ticket-rule"></div>
+        <ul class="ticket-benefits">
+          <li>Entrada VIP</li>
+          <li>Brazalete premium de tela</li>
+          <li>Check-in prioritario y acceso preferencial</li>
+          <li>1 trago de bienvenida de cortesía</li>
+          <li>Acceso prioritario a la foto oficial y experiencia en tarima</li>
+          <li>Souvenir digital del evento, cuando esté disponible</li>
+        </ul>
+        <p class="ticket-note">Los momentos de foto/tarima están sujetos a la operación del evento y disponibilidad del artista.</p>
+      </div>
+
+    </div>
+
+    <div class="order-bar">
+      <div class="order-qty">
+        <p class="order-label">Qty</p>
+        <div class="qty-control">
+          <button class="qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
+          <span class="qty-display" id="qty-display">1</span>
+          <button class="qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+      <div class="order-total">
+        <p class="order-label">Total</p>
+        <p class="total-amount" id="total-amount">RD$2,500</p>
+      </div>
+    </div>
+
+    <p class="error-msg" id="error-msg" hidden></p>
+
+    <button class="checkout-btn" id="checkout-btn">Continue to Payment</button>
+
+    <p class="secure-note">Secured by Stripe &nbsp;&middot;&nbsp; All major cards accepted</p>
+
+  </main>
+
+  <script>
+    (function () {
+      const PRICES = {
+        'general': 2500,
+        'vip': 3500,
+      };
+      const MAX_QTY = 10;
+
+      let selectedType = 'general';
+      let quantity = 1;
+
+      const cards = document.querySelectorAll('.ticket-card');
+      const qtyMinus = document.getElementById('qty-minus');
+      const qtyPlus = document.getElementById('qty-plus');
+      const qtyDisplay = document.getElementById('qty-display');
+      const totalEl = document.getElementById('total-amount');
+      const errorEl = document.getElementById('error-msg');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      function formatPrice(n) {
+        return 'RD$' + n.toLocaleString('es-DO');
+      }
+
+      function updateTotal() {
+        const price = PRICES[selectedType] || 0;
+        totalEl.textContent = formatPrice(price * quantity);
+      }
+
+      function updateQtyButtons() {
+        qtyMinus.disabled = quantity <= 1;
+        qtyPlus.disabled = quantity >= MAX_QTY;
+        qtyDisplay.textContent = quantity;
+      }
+
+      function selectCard(type) {
+        selectedType = type;
+        cards.forEach(function (card) {
+          const isSelected = card.dataset.type === type;
+          card.classList.toggle('selected', isSelected);
+          card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+        });
+        updateTotal();
+      }
+
+      cards.forEach(function (card) {
+        card.addEventListener('click', function () {
+          selectCard(card.dataset.type);
+        });
+        card.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectCard(card.dataset.type);
+          }
+        });
+      });
+
+      qtyMinus.addEventListener('click', function () {
+        if (quantity > 1) {
+          quantity--;
+          updateQtyButtons();
+          updateTotal();
+        }
+      });
+
+      qtyPlus.addEventListener('click', function () {
+        if (quantity < MAX_QTY) {
+          quantity++;
+          updateQtyButtons();
+          updateTotal();
+        }
+      });
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.hidden = false;
+      }
+
+      function clearError() {
+        errorEl.hidden = true;
+        errorEl.textContent = '';
+      }
+
+      checkoutBtn.addEventListener('click', async function () {
+        clearError();
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = 'Processing…';
+
+        try {
+          const res = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticketType: selectedType, quantity: quantity }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.url) {
+            showError(data.error || 'Something went wrong. Please try again.');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = 'Continue to Payment';
+            return;
+          }
+
+          window.location.href = data.url;
+        } catch (err) {
+          showError('Connection error. Please try again.');
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = 'Continue to Payment';
+        }
+      });
+
+      // Init
+      updateQtyButtons();
+      updateTotal();
+    })();
+  </script>
+
+</body>
+</html>
