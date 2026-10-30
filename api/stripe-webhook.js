@@ -5,7 +5,7 @@ const { getPool } = require('./_db');
 const { sendTicketEmail } = require('./_email');
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
-
+const VIP_UPGRADE_LINK_ID = 'plink_1UWHRACxwhc6RPGIG5Qi0dMT';
 // Charset excludes ambiguous chars (0, O, I, 1) for readable codes.
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
@@ -61,7 +61,107 @@ async function attemptEmail(pool, sessionId, { to, attendeeName, ticketType, cod
 }
 
 // ── HANDLER ───────────────────────────────────────────────────────────────────
+// Actualiza una entrada General existente a VIP después del pago.
+async function processVipUpgrade(pool, session, res) {
+  const sessionId = session.id;
 
+  const field = (session.custom_fields || []).find(
+    (f) => f.key === 'ticketcode'
+  );
+
+  const ticketCode = String(field?.text?.value || '')
+    .trim()
+    .toUpperCase();
+
+  const validCode = /^VD26-[A-HJ-NP-Z2-9]{6}$/.test(ticketCode);
+
+  const validAmount =
+    session.currency === 'dop' &&
+    session.amount_total === 100000;
+
+  if (!validCode || !validAmount) {
+    console.error(
+      'VIP UPGRADE NEEDS MANUAL REVIEW:',
+      sessionId,
+      ticketCode
+    );
+
+    return res.status(200).json({
+      received: true,
+      review_required: true
+    });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const inserted = await client.query(
+      `INSERT INTO fulfilled_sessions
+         (stripe_checkout_session_id, email_sent)
+       VALUES ($1, true)
+       ON CONFLICT (stripe_checkout_session_id) DO NOTHING
+       RETURNING stripe_checkout_session_id`,
+      [sessionId]
+    );
+
+    if (inserted.rowCount === 0) {
+      await client.query('COMMIT');
+
+      return res.status(200).json({
+        received: true,
+        already_processed: true
+      });
+    }
+
+    const upgraded = await client.query(
+      `UPDATE tickets
+       SET ticket_type = 'vip'
+       WHERE UPPER(ticket_code) = $1
+         AND event = 'halloween-2026'
+         AND ticket_type = 'general'
+         AND status = 'valid'
+         AND used = false
+       RETURNING ticket_code`,
+      [ticketCode]
+    );
+
+    if (upgraded.rowCount !== 1) {
+      await client.query('ROLLBACK');
+
+      console.error(
+        'VIP UPGRADE NEEDS MANUAL REVIEW:',
+        sessionId,
+        ticketCode
+      );
+
+      return res.status(200).json({
+        received: true,
+        review_required: true
+      });
+    }
+
+    await client.query('COMMIT');
+
+    console.log('VIP upgrade completed:', sessionId, ticketCode);
+
+    return res.status(200).json({
+      received: true,
+      upgraded: true
+    });
+
+  } catch (err) {
+    await client.query('ROLLBACK').catch(() => {});
+
+    console.error('VIP upgrade database error:', err.message);
+
+    return res.status(500).end();
+
+  } finally {
+    client.release();
+  }
+}
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed.' });
@@ -101,7 +201,10 @@ module.exports = async function handler(req, res) {
 
   const sessionId = session.id;
   const pool = getPool();
-
+// Procesar upgrades VIP antes de la creación normal de entradas.
+if (session.payment_link === VIP_UPGRADE_LINK_ID) {
+  return processVipUpgrade(pool, session, res);
+}
   // ── IDEMPOTENCY: check if session has already been fulfilled ──────────────
   let existingRow = null;
   try {
