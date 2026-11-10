@@ -1,6 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/tickets", "destination": "/tickets.html" },
-    { "source": "/ticket-success", "destination": "/ticket-success.html" }
-  ]
-}
